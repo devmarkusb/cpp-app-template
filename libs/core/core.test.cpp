@@ -1,4 +1,4 @@
-#include "mb/cpp-app-template/cpp-app-template.hpp"
+#include "core/core.hpp"
 
 #include "gtest/gtest.h"
 
