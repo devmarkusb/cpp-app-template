@@ -1,0 +1,515 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Kitware/CMake/master/Help/manual/presets/schema.json",
+  "version": 8,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 30,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "description": "Shared generator, output dir, and portable CMake defaults.",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "warnings": {
+        "dev": true,
+        "deprecated": true,
+        "unusedCli": true
+      },
+      "cacheVariables": {
+        "CMAKE_CXX_STANDARD": "26",
+        "CMAKE_CXX_EXTENSIONS": "OFF",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_COLOR_DIAGNOSTICS": "ON",
+        "CMAKE_WARN_DEPRECATED": "ON",
+        "CMAKE_LINK_WHAT_YOU_USE": "ON",
+        "CMAKE_PROJECT_TOP_LEVEL_INCLUDES": "./devenv/cmake/fetch-content-from-lockfile.cmake"
+      }
+    },
+    {
+      "name": "debug",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "release",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "gcc",
+      "hidden": true,
+      "toolchainFile": "devenv/cmake/toolchains/gcc-toolchain.cmake"
+    },
+    {
+      "name": "clang",
+      "hidden": true,
+      "toolchainFile": "devenv/cmake/toolchains/clang-toolchain.cmake"
+    },
+    {
+      "name": "clang-libc++",
+      "hidden": true,
+      "toolchainFile": "devenv/cmake/toolchains/clang-libc++-toolchain.cmake"
+    },
+    {
+      "name": "appleclang",
+      "hidden": true,
+      "toolchainFile": "devenv/cmake/toolchains/appleclang-toolchain.cmake"
+    },
+    {
+      "name": "msvc",
+      "hidden": true,
+      "toolchainFile": "devenv/cmake/toolchains/msvc-toolchain.cmake",
+      "cacheVariables": {
+        "CMAKE_CXX_STANDARD": "23"
+      }
+    },
+    {
+      "name": "MaxSan",
+      "hidden": true,
+      "cacheVariables": {
+        "MB_DEVENV_SANITIZER": "MaxSan"
+      }
+    },
+    {
+      "name": "gcc-debug",
+      "displayName": "GCC Debug Build",
+      "description": "Ninja + GCC toolchain, Debug.",
+      "inherits": [
+        "base",
+        "debug",
+        "gcc"
+      ]
+    },
+    {
+      "name": "gcc-release",
+      "displayName": "GCC Release Build",
+      "description": "Ninja + GCC toolchain, RelWithDebInfo.",
+      "inherits": [
+        "base",
+        "release",
+        "gcc"
+      ]
+    },
+    {
+      "name": "clang-debug",
+      "displayName": "Clang Debug Build",
+      "description": "Ninja + Clang (libstdc++), Debug.",
+      "inherits": [
+        "base",
+        "debug",
+        "clang"
+      ]
+    },
+    {
+      "name": "clang-release",
+      "displayName": "Clang Release Build",
+      "description": "Ninja + Clang (libstdc++), RelWithDebInfo.",
+      "inherits": [
+        "base",
+        "release",
+        "clang"
+      ]
+    },
+    {
+      "name": "clang-libc++-debug",
+      "displayName": "Clang-libc++ Debug Build",
+      "description": "Ninja + Clang + libc++, Debug.",
+      "inherits": [
+        "base",
+        "debug",
+        "clang-libc++"
+      ]
+    },
+    {
+      "name": "clang-libc++-release",
+      "displayName": "Clang-libc++ Release Build",
+      "description": "Ninja + Clang + libc++, RelWithDebInfo.",
+      "inherits": [
+        "base",
+        "release",
+        "clang-libc++"
+      ]
+    },
+    {
+      "name": "appleclang-debug",
+      "displayName": "Appleclang Debug Build",
+      "description": "Ninja + Apple Clang, Debug.",
+      "inherits": [
+        "base",
+        "debug",
+        "appleclang"
+      ]
+    },
+    {
+      "name": "appleclang-release",
+      "displayName": "Appleclang Release Build",
+      "description": "Ninja + Apple Clang, RelWithDebInfo.",
+      "inherits": [
+        "base",
+        "release",
+        "appleclang"
+      ]
+    },
+    {
+      "name": "msvc-debug",
+      "displayName": "MSVC Debug Build",
+      "description": "Ninja + MSVC, Debug.",
+      "inherits": [
+        "base",
+        "debug",
+        "msvc"
+      ]
+    },
+    {
+      "name": "msvc-release",
+      "displayName": "MSVC Release Build",
+      "description": "Ninja + MSVC, RelWithDebInfo.",
+      "inherits": [
+        "base",
+        "release",
+        "msvc"
+      ]
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "description": "Use all CPU cores (jobs=0).",
+      "jobs": 0
+    },
+    {
+      "name": "gcc-debug",
+      "configurePreset": "gcc-debug",
+      "inherits": [
+        "base"
+      ]
+    },
+    {
+      "name": "gcc-release",
+      "configurePreset": "gcc-release",
+      "inherits": [
+        "base"
+      ]
+    },
+    {
+      "name": "clang-debug",
+      "configurePreset": "clang-debug",
+      "inherits": [
+        "base"
+      ]
+    },
+    {
+      "name": "clang-release",
+      "configurePreset": "clang-release",
+      "inherits": [
+        "base"
+      ]
+    },
+    {
+      "name": "clang-libc++-debug",
+      "configurePreset": "clang-libc++-debug",
+      "inherits": [
+        "base"
+      ]
+    },
+    {
+      "name": "clang-libc++-release",
+      "configurePreset": "clang-libc++-release",
+      "inherits": [
+        "base"
+      ]
+    },
+    {
+      "name": "appleclang-debug",
+      "configurePreset": "appleclang-debug",
+      "inherits": [
+        "base"
+      ]
+    },
+    {
+      "name": "appleclang-release",
+      "configurePreset": "appleclang-release",
+      "inherits": [
+        "base"
+      ]
+    },
+    {
+      "name": "msvc-debug",
+      "configurePreset": "msvc-debug",
+      "inherits": [
+        "base"
+      ]
+    },
+    {
+      "name": "msvc-release",
+      "configurePreset": "msvc-release",
+      "inherits": [
+        "base"
+      ]
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "description": "Fail if no tests; stop on first failure; show failing output.",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      }
+    },
+    {
+      "name": "gcc-debug",
+      "inherits": "base",
+      "configurePreset": "gcc-debug"
+    },
+    {
+      "name": "gcc-release",
+      "inherits": "base",
+      "configurePreset": "gcc-release"
+    },
+    {
+      "name": "clang-debug",
+      "inherits": "base",
+      "configurePreset": "clang-debug"
+    },
+    {
+      "name": "clang-release",
+      "inherits": "base",
+      "configurePreset": "clang-release"
+    },
+    {
+      "name": "clang-libc++-debug",
+      "inherits": "base",
+      "configurePreset": "clang-libc++-debug"
+    },
+    {
+      "name": "clang-libc++-release",
+      "inherits": "base",
+      "configurePreset": "clang-libc++-release"
+    },
+    {
+      "name": "appleclang-debug",
+      "inherits": "base",
+      "configurePreset": "appleclang-debug"
+    },
+    {
+      "name": "appleclang-release",
+      "inherits": "base",
+      "configurePreset": "appleclang-release"
+    },
+    {
+      "name": "msvc-debug",
+      "inherits": "base",
+      "configurePreset": "msvc-debug"
+    },
+    {
+      "name": "msvc-release",
+      "inherits": "base",
+      "configurePreset": "msvc-release"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "gcc-debug",
+      "displayName": "GCC Debug: configure, build, test",
+      "description": "Full local/CI loop for GCC Debug.",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "gcc-debug"
+        },
+        {
+          "type": "build",
+          "name": "gcc-debug"
+        },
+        {
+          "type": "test",
+          "name": "gcc-debug"
+        }
+      ]
+    },
+    {
+      "name": "gcc-release",
+      "displayName": "GCC Release: configure, build, test",
+      "description": "Full local/CI loop for GCC RelWithDebInfo.",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "gcc-release"
+        },
+        {
+          "type": "build",
+          "name": "gcc-release"
+        },
+        {
+          "type": "test",
+          "name": "gcc-release"
+        }
+      ]
+    },
+    {
+      "name": "clang-debug",
+      "displayName": "Clang Debug: configure, build, test",
+      "description": "Full local/CI loop for Clang Debug.",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "clang-debug"
+        },
+        {
+          "type": "build",
+          "name": "clang-debug"
+        },
+        {
+          "type": "test",
+          "name": "clang-debug"
+        }
+      ]
+    },
+    {
+      "name": "clang-release",
+      "displayName": "Clang Release: configure, build, test",
+      "description": "Full local/CI loop for Clang RelWithDebInfo.",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "clang-release"
+        },
+        {
+          "type": "build",
+          "name": "clang-release"
+        },
+        {
+          "type": "test",
+          "name": "clang-release"
+        }
+      ]
+    },
+    {
+      "name": "clang-libc++-debug",
+      "displayName": "Clang-libc++ Debug: configure, build, test",
+      "description": "Full local/CI loop for Clang + libc++ Debug.",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "clang-libc++-debug"
+        },
+        {
+          "type": "build",
+          "name": "clang-libc++-debug"
+        },
+        {
+          "type": "test",
+          "name": "clang-libc++-debug"
+        }
+      ]
+    },
+    {
+      "name": "clang-libc++-release",
+      "displayName": "Clang-libc++ Release: configure, build, test",
+      "description": "Full local/CI loop for Clang + libc++ RelWithDebInfo.",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "clang-libc++-release"
+        },
+        {
+          "type": "build",
+          "name": "clang-libc++-release"
+        },
+        {
+          "type": "test",
+          "name": "clang-libc++-release"
+        }
+      ]
+    },
+    {
+      "name": "appleclang-debug",
+      "displayName": "Apple Clang Debug: configure, build, test",
+      "description": "Full local/CI loop for Apple Clang Debug.",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "appleclang-debug"
+        },
+        {
+          "type": "build",
+          "name": "appleclang-debug"
+        },
+        {
+          "type": "test",
+          "name": "appleclang-debug"
+        }
+      ]
+    },
+    {
+      "name": "appleclang-release",
+      "displayName": "Apple Clang Release: configure, build, test",
+      "description": "Full local/CI loop for Apple Clang RelWithDebInfo.",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "appleclang-release"
+        },
+        {
+          "type": "build",
+          "name": "appleclang-release"
+        },
+        {
+          "type": "test",
+          "name": "appleclang-release"
+        }
+      ]
+    },
+    {
+      "name": "msvc-debug",
+      "displayName": "MSVC Debug: configure, build, test",
+      "description": "Full local/CI loop for MSVC Debug.",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "msvc-debug"
+        },
+        {
+          "type": "build",
+          "name": "msvc-debug"
+        },
+        {
+          "type": "test",
+          "name": "msvc-debug"
+        }
+      ]
+    },
+    {
+      "name": "msvc-release",
+      "displayName": "MSVC Release: configure, build, test",
+      "description": "Full local/CI loop for MSVC RelWithDebInfo.",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "msvc-release"
+        },
+        {
+          "type": "build",
+          "name": "msvc-release"
+        },
+        {
+          "type": "test",
+          "name": "msvc-release"
+        }
+      ]
+    }
+  ]
+}
