@@ -23,7 +23,7 @@ target_sources(
         FILE_SET HEADERS
             BASE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include"
             FILES ${_mb_core_headers}
-    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/core.cpp"
+    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/snake_game.cpp"
 )
 
 if(MB_CPP_APP_TEMPLATE_BUILD_TESTS)
@@ -32,7 +32,7 @@ if(MB_CPP_APP_TEMPLATE_BUILD_TESTS)
     add_executable(mb.cpp-app-template.test)
     target_sources(
         mb.cpp-app-template.test
-        PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/core.test.cpp"
+        PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/snake_game.test.cpp"
     )
     target_link_libraries(
         mb.cpp-app-template.test
