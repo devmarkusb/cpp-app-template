@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Instantiate a new C++ library from cpp-lib-template (this repo).
+"""Instantiate a new C++ application from cpp-app-template (this repo).
 
-Replaces vendor/library names, renames paths and files, optionally rewrites README
+Replaces vendor/app names, renames paths and files, optionally rewrites README
 badges for your GitHub repo, and can re-init git with a fresh devenv submodule.
 
 Example:
-    python3 scripts/new-cpp-lib.py \\
+    python3 scripts/new-cpp-app.py \\
         --dest ~/src/acme-my-widget \\
         --vendor acme \\
-        --lib my-widget \\
+        --app my-widget \\
         --github acme-corp/acme-my-widget
 """
 
@@ -23,35 +23,34 @@ from pathlib import Path
 
 # Template identity (must match this repository)
 OLD_VENDOR = "mb"
-OLD_LIB_KEBAB = "cpp-lib-template"
-OLD_CMAKE_PROJECT = f"{OLD_VENDOR}.{OLD_LIB_KEBAB}"
-OLD_CMAKE_ALIAS = f"{OLD_VENDOR}::{OLD_LIB_KEBAB}"
+OLD_APP_KEBAB = "cpp-app-template"
+OLD_CMAKE_PROJECT = f"{OLD_VENDOR}.{OLD_APP_KEBAB}"
+OLD_CMAKE_ALIAS = f"{OLD_VENDOR}::{OLD_APP_KEBAB}"
 OLD_CXX_NS = "mb::cpp_app_template"
 OLD_OPT = "MB_CPP_APP_TEMPLATE"
 OLD_INTERNAL = "_mb_cpp_app_template"
-OLD_INCLUDE = f"{OLD_VENDOR}/{OLD_LIB_KEBAB}"
-OLD_HEADER = f"{OLD_LIB_KEBAB}.hpp"
-OLD_CPP = f"{OLD_LIB_KEBAB}.cpp"
-OLD_TEST_CPP = f"{OLD_LIB_KEBAB}.test.cpp"
-OLD_CONFIG_IN = f"cmake/{OLD_CMAKE_PROJECT}-config.cmake.in"
+OLD_INCLUDE = f"{OLD_VENDOR}/{OLD_APP_KEBAB}"
+OLD_HEADER = f"{OLD_APP_KEBAB}.hpp"
+OLD_CPP = f"{OLD_APP_KEBAB}.cpp"
+OLD_TEST_CPP = f"{OLD_APP_KEBAB}.test.cpp"
 
-OLD_CMAKELISTS_HEADER = """# CMake project `mb.cpp-app-template` — options `MB_CPP_APP_TEMPLATE_*`, C++ `mb::cpp_app_template`, headers under `include/mb/cpp-app-template/`.
+OLD_CMAKELISTS_HEADER = """# CMake project `mb.cpp-app-template` — options `MB_CPP_APP_TEMPLATE_*`, C++ `mb::cpp_app_template`, helper lib under `libs/core/`.
 """
 
 OLD_README_USAGE_SECTION = """## Syncing with the upstream template
 
-This repo was generated with `scripts/new-cpp-lib.py`. To pull structural improvements from the original template, run:
+This repo was generated with `scripts/new-cpp-app.py`. To pull structural improvements from the original template, run:
 
-    git remote add template https://github.com/devmarkusb/cpp-lib-template.git
+    git remote add template https://github.com/devmarkusb/cpp-app-template.git
     git fetch template
 
-Upstream repository: [devmarkusb/cpp-lib-template](https://github.com/devmarkusb/cpp-lib-template).
+Upstream repository: [devmarkusb/cpp-app-template](https://github.com/devmarkusb/cpp-app-template).
 
 """
 
 
 def die(msg: str, code: int = 1) -> None:
-    print(f"new-cpp-lib.py: {msg}", file=sys.stderr)
+    print(f"new-cpp-app.py: {msg}", file=sys.stderr)
     raise SystemExit(code)
 
 
@@ -59,14 +58,14 @@ def validate_segment(name: str, kind: str) -> None:
     if not re.fullmatch(r"[a-z][a-z0-9-]*", name):
         die(
             f"{kind} {name!r} is invalid: use lowercase letters, digits, hyphens; "
-            "must start with a letter (one segment, no dots — the CMake project is vendor.lib)."
+            "must start with a letter (one segment, no dots — the CMake project is vendor.app)."
         )
 
 
-def kebab_to_cxx_namespace(vendor: str, lib_kebab: str) -> str:
+def kebab_to_cxx_namespace(vendor: str, app_kebab: str) -> str:
     v = vendor.replace("-", "_")
-    l = lib_kebab.replace("-", "_")
-    return f"{v}::{l}"
+    a = app_kebab.replace("-", "_")
+    return f"{v}::{a}"
 
 
 def cmake_option_prefix(cmake_project: str) -> str:
@@ -132,7 +131,7 @@ def patch_readme_badge_line(readme: Path, owner_repo: str) -> None:
     if not readme.is_file():
         return
     lines = readme.read_text(encoding="utf-8").splitlines(keepends=True)
-    old = "devmarkusb/cpp-lib-template"
+    old = "devmarkusb/cpp-app-template"
     new = owner_repo
     for i, line in enumerate(lines):
         if "![Continuous Integration Tests]" in line and old in line:
@@ -179,19 +178,19 @@ def rename_paths(root: Path, moves: list[tuple[Path, Path]]) -> None:
 def relocate_include_headers(
     root: Path,
     old_vendor: str,
-    old_lib: str,
+    old_app: str,
     new_vendor: str,
-    new_lib: str,
+    new_app: str,
 ) -> None:
-    """Move include/<vendor>/<lib>/ and rename the primary public header inside."""
-    src_dir = root / "include" / old_vendor / old_lib
-    dst_dir = root / "include" / new_vendor / new_lib
+    """Move include/<vendor>/<app>/ and rename the primary public header inside."""
+    src_dir = root / "include" / old_vendor / old_app
+    dst_dir = root / "include" / new_vendor / new_app
     if not src_dir.exists():
         return
     dst_dir.parent.mkdir(parents=True, exist_ok=True)
     src_dir.rename(dst_dir)
-    old_h = dst_dir / f"{old_lib}.hpp"
-    new_h = dst_dir / f"{new_lib}.hpp"
+    old_h = dst_dir / f"{old_app}.hpp"
+    new_h = dst_dir / f"{new_app}.hpp"
     if old_h.exists() and old_h != new_h:
         old_h.rename(new_h)
     # Drop empty include/<old_vendor> if possible
@@ -240,7 +239,7 @@ def git_initial_commit(dest: Path) -> None:
             str(dest),
             "commit",
             "-m",
-            "Initial import from cpp-lib-template",
+            "Initial import from cpp-app-template",
         ],
         capture_output=True,
         text=True,
@@ -249,7 +248,7 @@ def git_initial_commit(dest: Path) -> None:
     if r.returncode != 0:
         die(
             "Could not create initial commit (set git user.name and user.email). "
-            "Then run: git add -A && git commit -m \"Initial import from cpp-lib-template\""
+            'Then run: git add -A && git commit -m "Initial import from cpp-app-template"'
         )
 
 
@@ -258,11 +257,11 @@ def main() -> None:
     p.add_argument(
         "--template",
         type=Path,
-        help="Path to cpp-lib-template checkout (default: parent of scripts/).",
+        help="Path to cpp-app-template checkout (default: clone --clone-url).",
     )
     p.add_argument(
         "--clone-url",
-        default="https://github.com/devmarkusb/cpp-lib-template.git",
+        default="https://github.com/devmarkusb/cpp-app-template.git",
         help="Git URL to clone if --template is omitted (default: upstream template).",
     )
     p.add_argument(
@@ -277,10 +276,10 @@ def main() -> None:
         help="First CMake segment / include segment, e.g. mb, acme (lowercase, no dots).",
     )
     p.add_argument(
-        "--lib",
-        dest="lib_kebab",
+        "--app",
+        dest="app_kebab",
         required=True,
-        help="Kebab-case library name, e.g. cpp-lib-template, my-widget (becomes vendor.lib).",
+        help="Kebab-case application name, e.g. cpp-app-template, my-widget (becomes vendor.app).",
     )
     p.add_argument(
         "--github",
@@ -301,18 +300,17 @@ def main() -> None:
     args = p.parse_args()
 
     validate_segment(args.vendor, "vendor")
-    validate_segment(args.lib_kebab, "lib")
+    validate_segment(args.app_kebab, "app")
 
-    new_cmake = f"{args.vendor}.{args.lib_kebab}"
-    new_alias = f"{args.vendor}::{args.lib_kebab}"
-    new_cxx = kebab_to_cxx_namespace(args.vendor, args.lib_kebab)
+    new_cmake = f"{args.vendor}.{args.app_kebab}"
+    new_alias = f"{args.vendor}::{args.app_kebab}"
+    new_cxx = kebab_to_cxx_namespace(args.vendor, args.app_kebab)
     new_opt = cmake_option_prefix(new_cmake)
     new_internal = cmake_internal_prefix(new_cmake)
-    new_include = f"{args.vendor}/{args.lib_kebab}"
-    new_header = f"{args.lib_kebab}.hpp"
-    new_cpp = f"{args.lib_kebab}.cpp"
-    new_test = f"{args.lib_kebab}.test.cpp"
-    new_config_in = f"cmake/{new_cmake}-config.cmake.in"
+    new_include = f"{args.vendor}/{args.app_kebab}"
+    new_header = f"{args.app_kebab}.hpp"
+    new_cpp = f"{args.app_kebab}.cpp"
+    new_test = f"{args.app_kebab}.test.cpp"
 
     template_root = args.template
     if template_root is None:
@@ -320,19 +318,17 @@ def main() -> None:
         root = args.dest
     else:
         template_root = template_root.resolve()
-        if not (template_root / "CMakeLists.txt").is_file():
-            die(f"--template {template_root} does not look like cpp-lib-template.")
+        if not (template_root / "scripts" / "new-cpp-app.py").is_file():
+            die(f"--template {template_root} does not look like cpp-app-template.")
         copy_template(template_root, args.dest)
         root = args.dest.resolve()
 
     relocate_include_headers(
-        root, OLD_VENDOR, OLD_LIB_KEBAB, args.vendor, args.lib_kebab
+        root, OLD_VENDOR, OLD_APP_KEBAB, args.vendor, args.app_kebab
     )
 
     moves: list[tuple[Path, Path]] = [
-        (Path(OLD_CONFIG_IN), Path(new_config_in)),
-        (Path(f"src/{OLD_CPP}"), Path(f"src/{new_cpp}")),
-        (Path(f"src/{OLD_TEST_CPP}"), Path(f"src/{new_test}")),
+        (Path("apps/main.cpp"), Path(f"apps/{new_cpp}")),
     ]
     rename_paths(root, moves)
 
@@ -343,12 +339,12 @@ def main() -> None:
 
     readme_usage_new = """## Syncing with the upstream template
 
-This repo was generated with `scripts/new-cpp-lib.py`. To pull structural improvements from the original template, run:
+This repo was generated with `scripts/new-cpp-app.py`. To pull structural improvements from the original template, run:
 
-    git remote add template https://github.com/devmarkusb/cpp-lib-template.git
+    git remote add template https://github.com/devmarkusb/cpp-app-template.git
     git fetch template
 
-Upstream repository: [devmarkusb/cpp-lib-template](https://github.com/devmarkusb/cpp-lib-template).
+Upstream repository: [devmarkusb/cpp-app-template](https://github.com/devmarkusb/cpp-app-template).
 
 """
 
@@ -364,13 +360,11 @@ Upstream repository: [devmarkusb/cpp-lib-template](https://github.com/devmarkusb
         (OLD_HEADER, new_header),
         (OLD_CPP, new_cpp),
         (OLD_TEST_CPP, new_test),
-        # ci.yml install-test namespace (YAML value)
-        (f"namespace: {OLD_VENDOR}", f"namespace: {args.vendor}"),
-        # README title and optional GitHub slug
-        ("# cpp-app-template", f"# {args.lib_kebab}"),
+        ("apps/main.cpp", f"apps/{new_cpp}"),
+        ("# cpp-app-template", f"# {args.app_kebab}"),
         (
-            'DESCRIPTION "cpp-app-template library"',
-            f'DESCRIPTION "{args.lib_kebab} library"',
+            'DESCRIPTION "cpp-app-template example application"',
+            f'DESCRIPTION "{args.app_kebab} example application"',
         ),
     ]
 
@@ -390,7 +384,7 @@ Upstream repository: [devmarkusb/cpp-lib-template](https://github.com/devmarkusb
     print(f"Created project at {root}")
     if not args.github:
         print(
-            "Tip: search for devmarkusb/cpp-lib-template in README.md and set your CI badge URLs,"
+            "Tip: search for devmarkusb/cpp-app-template in README.md and set your CI badge URLs,"
             " or re-run with --github OWNER/REPO."
         )
     print("Next: cd there, cmake --preset gcc-debug && cmake --build build/gcc-debug && ctest --preset gcc-debug")
