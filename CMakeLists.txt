@@ -15,18 +15,30 @@ option(
     ${PROJECT_IS_TOP_LEVEL}
 )
 
+# [CMAKE.SKIP_EXAMPLES]
+option(
+    MB_CPP_APP_TEMPLATE_BUILD_EXAMPLES
+    "Enable building examples. Default: ${PROJECT_IS_TOP_LEVEL}. Values: { ON, OFF }."
+    ${PROJECT_IS_TOP_LEVEL}
+)
+
+list(PREPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/devenv/cmake")
+
+if(MB_CPP_LIB_TEMPLATE_BUILD_TESTS)
+    include(mb-devenv-ctest-root)
+endif()
+include(mb-devenv-defaults)
+include(mb-devenv-install-library-config)
 include(GNUInstallDirs)
 
+# From fetched https://github.com/devmarkusb/pre-commit (see fetchcontent-lockfile.json).
 mb_pre_commit_setup()
-
-if(MB_CPP_APP_TEMPLATE_BUILD_TESTS)
-    enable_testing()
-endif()
 
 add_subdirectory(libs/core)
 
 add_executable(mb.cpp-app-template apps/main.cpp)
 target_link_libraries(mb.cpp-app-template PRIVATE mb::cpp-app-template.core)
+mb_devenv_set_target_defaults(mb.cpp-app-template)
 
 install(
     TARGETS mb.cpp-app-template
