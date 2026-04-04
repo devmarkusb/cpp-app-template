@@ -9,7 +9,8 @@ Minimal C++ **application** template: a small static library in `libs/core/`, an
 
 ## Quick start
 
-Initialize submodules, then configure and build (CMake 3.30+, C++26 on GCC/Clang/AppleClang and C++23 on MSVC presets; Ninja):
+Initialize submodules, then configure and build (CMake 3.30+, C++26 on GCC/Clang/AppleClang
+and C++23 on MSVC presets; Ninja):
 
 ```bash
 git submodule update --init --recursive
@@ -19,8 +20,7 @@ cmake --build build/gcc-debug
 ctest --preset gcc-debug
 ```
 
-Sync submodules later: `devenv/git-sub.sh`. Optional local hooks: `./devenv/bootstrap.sh`, then
-`pre-commit` (or `pre-commit run -a`).
+Sync submodules later: `devenv/git-sub.sh`.
 
 Pinned dependencies use the repo-root `fetchcontent-lockfile.json`; details are in `devenv/README.md`.
 
@@ -30,7 +30,7 @@ Prefer generating a tree with the script (names, paths, optional README badges, 
 
 ```bash
 python3 scripts/new-cpp-app.py \
-  --dest ~/src/my-new-app \
+  --dest ~/dev/apps/my-new-app \
   --vendor acme \
   --app my-widget \
   --github OWNER/my-new-app \
@@ -43,8 +43,8 @@ also use GitHub “Use this template”, init submodules, then rename using the 
 
 ## CMake
 
-| Option | Default | Purpose |
-|--------|---------|---------|
+| Option                            | Default             | Purpose                                                 |
+|-----------------------------------|---------------------|---------------------------------------------------------|
 | `MB_CPP_APP_TEMPLATE_BUILD_TESTS` | `ON` when top-level | Build `mb.cpp-app-template.test` and GoogleTest wiring. |
 
 `CMakePresets.json` lists compiler presets (e.g. `gcc-debug`, `msvc-release`).
