@@ -6,7 +6,7 @@ project(
     mb.cpp-app-template
     DESCRIPTION "cpp-app-template example application"
     LANGUAGES CXX
-    VERSION 0.1.0
+    VERSION 1.0.0
 )
 
 option(
