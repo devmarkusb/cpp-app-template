@@ -27,3 +27,20 @@ mb_pre_commit_setup()
 
 add_subdirectory(libs/core)
 add_subdirectory(apps)
+
+# Shared CI (devmarkusb/gh-workflows build-and-test) runs `cmake --install --prefix /opt/namespace.component`
+# then `ls -R` on that prefix; install rules must create content under the prefix.
+if(PROJECT_IS_TOP_LEVEL)
+    include(GNUInstallDirs)
+    install(
+        TARGETS mb.cpp-app-template.core
+        FILE_SET HEADERS
+        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+    )
+    install(
+        TARGETS mb.cpp-app-template
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+    )
+endif()
