@@ -387,7 +387,9 @@ Upstream repository: [devmarkusb/cpp-app-template](https://github.com/devmarkusb
             "Tip: search for devmarkusb/cpp-app-template in README.md and set your CI badge URLs,"
             " or re-run with --github OWNER/REPO."
         )
-    print("Next: cd there, cmake --preset gcc-debug && cmake --build build/gcc-debug && ctest --preset gcc-debug")
+    print(
+        "Next: cd there, cmake --preset gcc-debug && cmake --build build/gcc-debug && ctest --preset gcc-debug"
+    )
 
 
 if __name__ == "__main__":
