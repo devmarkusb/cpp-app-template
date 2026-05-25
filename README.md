@@ -20,7 +20,7 @@ cmake --build build/gcc-debug
 ctest --preset gcc-debug
 ```
 
-Sync submodules later: `devenv/git-sub.sh`.
+Sync submodules later: `devenv/scripts/git-sub.sh`.
 
 Pinned dependencies use the repo-root `fetchcontent-lockfile.json`; details are in `devenv/README.md`.
 
