@@ -362,7 +362,9 @@ Upstream repository: [devmarkusb/cpp-app-template](https://github.com/devmarkusb
         ),
     ]
 
-    if args.github and not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", args.github):
+    if args.github and not re.fullmatch(
+        r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", args.github
+    ):
         die("--github must look like OWNER/REPO")
 
     replace_in_files(root, replacements)
