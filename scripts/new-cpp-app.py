@@ -113,11 +113,7 @@ def git_clone_template(url: str, dest: Path) -> None:
 
 def should_skip_dir(path: Path) -> bool:
     parts = path.parts
-    if ".git" in parts:
-        return True
-    if "build" in parts and parts[0] == "build":
-        return True
-    return False
+    return ".git" in parts or ("build" in parts and parts[0] == "build")
 
 
 def is_probably_text(data: bytes) -> bool:
